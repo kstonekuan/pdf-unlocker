@@ -18,7 +18,7 @@ A web application to unlock password-protected PDF files. Upload your PDFs, and 
 - Next.js for the frontend and API routes
 - PDF.js for encrypted PDF handling and unlocking
 - pdf-lib for PDF manipulation and creation
-- Anthropic Claude 4 Opus AI for intelligent file analysis
+- Anthropic Claude AI for intelligent file analysis
 - Biome for linting and formatting
 
 ## Getting Started
@@ -92,7 +92,7 @@ yarn start
 
 ## Intelligent Filename Suggestions
 
-The PDF Unlocker app includes a powerful feature that uses Claude 4 Opus AI to analyze the content of your PDFs and suggest more meaningful filenames. This is especially useful when:
+The PDF Unlocker app includes a powerful feature that uses Claude to analyze the content of your PDFs and suggest more meaningful filenames. This is especially useful when:
 
 - Your PDFs have generic names like "document.pdf" or "scan_001.pdf"
 - You've received PDFs with randomized names

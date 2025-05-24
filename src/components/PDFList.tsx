@@ -109,6 +109,56 @@ export default function PDFList({
     URL.revokeObjectURL(url);
   };
 
+  const handleDownloadAll = async () => {
+    const unlockedFiles = files.filter(
+      (file) => file.status === "unlocked" && file.unlockedBlob,
+    );
+
+    if (unlockedFiles.length === 0) return;
+
+    if (unlockedFiles.length === 1) {
+      // If only one file, download it directly
+      handleDownload(unlockedFiles[0]);
+      return;
+    }
+
+    // For multiple files, create a zip
+    try {
+      // Dynamic import to avoid bundling JSZip if not needed
+      const JSZip = (await import("jszip")).default;
+      const zip = new JSZip();
+
+      // Add each file to the zip
+      for (const file of unlockedFiles) {
+        if (file.unlockedBlob) {
+          const fileName =
+            file.suggestedName || file.name.replace(".pdf", "_unlocked.pdf");
+          zip.file(fileName, file.unlockedBlob);
+        }
+      }
+
+      // Generate the zip file
+      const zipBlob = await zip.generateAsync({ type: "blob" });
+
+      // Download the zip
+      const url = URL.createObjectURL(zipBlob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "unlocked_pdfs.zip";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Failed to create zip file:", error);
+      // Fallback: download files individually
+      for (const file of unlockedFiles) {
+        await new Promise((resolve) => setTimeout(resolve, 100)); // Small delay between downloads
+        handleDownload(file);
+      }
+    }
+  };
+
   const getStatusIcon = (status: PDFFile["status"]) => {
     switch (status) {
       case "unlocking":
@@ -186,9 +236,24 @@ export default function PDFList({
     }
   };
 
+  const unlockedFilesCount = files.filter(
+    (file) => file.status === "unlocked" && file.unlockedBlob,
+  ).length;
+
   return (
     <div className="pdf-list">
-      <h2>Your PDFs</h2>
+      <div className="pdf-list-header">
+        <h2>Your PDFs</h2>
+        {unlockedFilesCount > 0 && (
+          <button
+            type="button"
+            className="download-all-btn"
+            onClick={handleDownloadAll}
+          >
+            Download All ({unlockedFilesCount})
+          </button>
+        )}
+      </div>
       {files.map((file) => (
         <div key={file.id} className={`pdf-item ${file.status}`}>
           <div className="pdf-info">

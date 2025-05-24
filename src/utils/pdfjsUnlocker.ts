@@ -101,12 +101,12 @@ export async function unlockPDFWithPdfJs(
   if (!userPassword) {
     console.log("Trying common passwords...");
     // Try common passwords (excluding empty password for encrypted PDFs)
-    const passwordsToTry = COMMON_PASSWORDS.filter(p => p !== "");
+    const passwordsToTry = COMMON_PASSWORDS.filter((p) => p !== "");
     for (const password of passwordsToTry) {
       try {
         console.log("Trying password: ***");
         const arrayBuffer = await getArrayBuffer(); // Fresh buffer for each attempt
-        
+
         const loadingTask = (pdfjsLib as any).getDocument({
           data: arrayBuffer,
           password: password,
@@ -119,7 +119,10 @@ export async function unlockPDFWithPdfJs(
       } catch (error: unknown) {
         const err = error as any;
         console.log("Password failed:", err.name, err.message);
-        if (err.name === "PasswordException" && err.message === "Incorrect Password") {
+        if (
+          err.name === "PasswordException" &&
+          err.message === "Incorrect Password"
+        ) {
           continue; // Try next password
         }
         // Other errors, stop trying
@@ -147,7 +150,10 @@ export async function unlockPDFWithPdfJs(
   } catch (error: unknown) {
     const err = error as any;
     console.error("User password failed:", err.name, err.message);
-    if (err.name === "PasswordException" && err.message === "Incorrect Password") {
+    if (
+      err.name === "PasswordException" &&
+      err.message === "Incorrect Password"
+    ) {
       throw new Error("Incorrect password");
     }
     throw new Error("Failed to unlock PDF");
@@ -167,7 +173,7 @@ async function decryptPDFToImages(
       data: arrayBuffer,
       password: password,
     });
-    const pdfDoc = await loadingTask.promise;
+    const pdfDoc: PDFJSDocumentProxy = await loadingTask.promise;
     console.log("PDF loaded successfully, pages:", pdfDoc.numPages);
 
     // Create a new PDF with pdf-lib
@@ -236,7 +242,11 @@ async function decryptPDFToImages(
 
     console.log("Saving new PDF document...");
     const pdfBytes = await newPdfDoc.save();
-    console.log("PDF successfully decrypted and saved! Size:", pdfBytes.length, "bytes");
+    console.log(
+      "PDF successfully decrypted and saved! Size:",
+      pdfBytes.length,
+      "bytes",
+    );
     return new Blob([pdfBytes], { type: "application/pdf" });
   } catch (error) {
     console.error("Error decrypting PDF:", error);
@@ -259,13 +269,15 @@ export async function extractTextFromEncryptedPDF(
       password: password,
     });
 
-    const pdfDoc = await loadingTask.promise;
+    const pdfDoc: PDFJSDocumentProxy = await loadingTask.promise;
     let fullText = "";
 
     for (let i = 1; i <= pdfDoc.numPages; i++) {
-      const page = await pdfDoc.getPage(i);
+      const page: PDFJSPageProxy = await pdfDoc.getPage(i);
       const textContent = await page.getTextContent();
-      const pageText = textContent.items.map((item: any) => item.str).join(" ");
+      const pageText = textContent.items
+        .map((item: { str: string }) => item.str)
+        .join(" ");
       fullText += `Page ${i}:\n${pageText}\n\n`;
     }
 

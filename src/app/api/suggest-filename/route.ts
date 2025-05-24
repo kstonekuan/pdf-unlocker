@@ -49,7 +49,7 @@ Return ONLY the suggested filename (with .pdf extension), nothing else. The file
 - Be concise but informative`;
 
     const response = await anthropic.messages.create({
-      model: "claude-opus-4-20250514",
+      model: "claude-3-5-haiku-latest",
       max_tokens: 100,
       messages: [
         {

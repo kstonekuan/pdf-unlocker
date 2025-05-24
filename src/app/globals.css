@@ -108,9 +108,35 @@ body {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.pdf-list h2 {
+.pdf-list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: 1rem;
+}
+
+.pdf-list h2 {
+  margin: 0;
   color: #333;
+}
+
+.download-all-btn {
+  padding: 0.5rem 1rem;
+  background-color: #059669;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.download-all-btn:hover {
+  background-color: #047857;
 }
 
 .pdf-item {
@@ -320,6 +346,17 @@ body {
   .password-input-container {
     flex-direction: column;
     width: 100%;
+  }
+
+  .pdf-list-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .download-all-btn {
+    align-self: stretch;
+    justify-content: center;
   }
 }
 
