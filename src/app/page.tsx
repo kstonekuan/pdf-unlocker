@@ -84,11 +84,10 @@ export default function Home() {
           </div>
 
           <div className="info-card">
-            <h3>🎯 Password Removal</h3>
+            <h3>🎯 Complete Unlock</h3>
             <p>
-              PDFs are unlocked by removing the password protection while
-              preserving the original content, formatting, and text
-              searchability.
+              Password-protected PDFs are fully unlocked by converting pages to 
+              high-resolution images. This removes all restrictions but text becomes non-searchable.
             </p>
           </div>
         </div>

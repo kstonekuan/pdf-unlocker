@@ -149,9 +149,9 @@ export async function unlockPDFWithPdfJs(
         });
         await loadingTask.promise;
 
-        // If successful, return the unlocked PDF as-is
+        // If successful, decrypt with pdf-lib and return unlocked PDF
         console.log(`Successfully unlocked with password: ${password}`);
-        return new Blob([await getArrayBuffer()], { type: "application/pdf" });
+        return await createUnlockedPDF(await getArrayBuffer(), password);
       } catch (error: unknown) {
         const err = error as PDFJSError;
         console.log(`Failed with password "${password}":`, err.message);
@@ -179,7 +179,7 @@ export async function unlockPDFWithPdfJs(
     });
     await loadingTask.promise;
 
-    return new Blob([await getArrayBuffer()], { type: "application/pdf" });
+    return await createUnlockedPDF(await getArrayBuffer(), userPassword);
   } catch (error: unknown) {
     const err = error as PDFJSError;
     if (
@@ -189,6 +189,89 @@ export async function unlockPDFWithPdfJs(
       throw new Error("Incorrect password");
     }
     throw new Error("Failed to unlock PDF");
+  }
+}
+
+async function createUnlockedPDF(
+  arrayBuffer: ArrayBuffer,
+  password: string,
+): Promise<Blob> {
+  try {
+    // pdf-lib doesn't support password-protected PDFs
+    // We need to use PDF.js to decrypt and render pages, then recreate with pdf-lib
+    const pdfjsLib = await import("pdfjs-dist");
+    
+    // Load the encrypted PDF with PDF.js
+    const loadingTask = (pdfjsLib as PDFJSLib).getDocument({
+      data: arrayBuffer,
+      password: password,
+    });
+    const pdfDoc = await loadingTask.promise;
+    
+    // Create a new PDF with pdf-lib
+    const newPdfDoc = await PDFDocument.create();
+    
+    // Copy all pages by rendering them as images
+    for (let i = 1; i <= pdfDoc.numPages; i++) {
+      const page = await pdfDoc.getPage(i);
+      const viewport = page.getViewport({ scale: 2.0 }); // Higher scale for better quality
+      
+      // Create canvas to render page
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+      if (!context) {
+        throw new Error("Could not get canvas context");
+      }
+      
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+      
+      // Render PDF page to canvas
+      const renderContext = {
+        canvasContext: context,
+        viewport: viewport,
+      };
+      
+      await page.render(renderContext).promise;
+      
+      // Convert canvas to PNG and embed in new PDF
+      const imageData = canvas.toDataURL("image/png");
+      const imageArrayBuffer = await fetch(imageData).then((res) =>
+        res.arrayBuffer(),
+      );
+      
+      const image = await newPdfDoc.embedPng(imageArrayBuffer);
+      
+      // Calculate page size - maintain aspect ratio but fit within reasonable bounds
+      const maxWidth = 612; // 8.5 inches at 72 DPI
+      const maxHeight = 792; // 11 inches at 72 DPI
+      
+      let pageWidth = viewport.width;
+      let pageHeight = viewport.height;
+      
+      // Scale down if too large
+      if (pageWidth > maxWidth || pageHeight > maxHeight) {
+        const scale = Math.min(maxWidth / pageWidth, maxHeight / pageHeight);
+        pageWidth *= scale;
+        pageHeight *= scale;
+      }
+      
+      const newPage = newPdfDoc.addPage([pageWidth, pageHeight]);
+      
+      newPage.drawImage(image, {
+        x: 0,
+        y: 0,
+        width: pageWidth,
+        height: pageHeight,
+      });
+    }
+    
+    const pdfBytes = await newPdfDoc.save();
+    console.log("PDF successfully decrypted and saved without password");
+    return new Blob([pdfBytes], { type: "application/pdf" });
+  } catch (error) {
+    console.error("Failed to decrypt PDF:", error);
+    throw new Error("Failed to create unlocked PDF");
   }
 }
 
