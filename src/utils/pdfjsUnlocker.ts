@@ -93,32 +93,13 @@ const COMMON_PASSWORDS = [
   "trustno1",
 ];
 
-// Initialize PDF.js worker
-let pdfJsInitialized = false;
-
-async function initializePdfJs() {
-  if (pdfJsInitialized || typeof window === "undefined") {
-    return;
-  }
-
-  try {
-    const pdfjsLib = await import("pdfjs-dist");
-
-    // Use local worker file
-    (pdfjsLib as PDFJSLib).GlobalWorkerOptions.workerSrc =
-      "/pdf.worker.min.mjs";
-    pdfJsInitialized = true;
-  } catch (error) {
-    throw new Error("PDF.js initialization failed");
-  }
-}
+// PDF.js worker is initialized in PDFWorkerProvider.tsx
+// No need to reinitialize here
 
 export async function unlockPDFWithPdfJs(
   file: File,
   userPassword?: string,
 ): Promise<Blob> {
-  await initializePdfJs();
-
   // Create a helper function to get fresh ArrayBuffer
   const getArrayBuffer = async () => {
     return await file.arrayBuffer();
@@ -138,14 +119,17 @@ export async function unlockPDFWithPdfJs(
     return new Blob([arrayBuffer], { type: "application/pdf" });
   } catch (error: unknown) {
     const err = error as PDFJSError;
+    console.error("PDF.js loading error:", err);
     // If not a password error, re-throw
     if (err.name !== "PasswordException") {
       // Try with pdf-lib to see if it's just a PDF.js loading issue
       try {
         const arrayBuffer = await getArrayBuffer();
         await PDFDocument.load(arrayBuffer);
+        console.log("PDF-lib loaded successfully, returning original file");
         return new Blob([arrayBuffer], { type: "application/pdf" });
       } catch (pdfLibError) {
+        console.error("PDF-lib loading error:", pdfLibError);
         throw new Error("Failed to load PDF - file may be corrupted");
       }
     }
@@ -166,9 +150,11 @@ export async function unlockPDFWithPdfJs(
         await loadingTask.promise;
 
         // If successful, decrypt and return
+        console.log(`Successfully unlocked with password: ${password}`);
         return await decryptPDFToImages(await getArrayBuffer(), password);
       } catch (error: unknown) {
         const err = error as PDFJSError;
+        console.log(`Failed with password "${password}":`, err.message);
         if (
           err.name === "PasswordException" &&
           err.message === "Incorrect Password"
@@ -176,6 +162,7 @@ export async function unlockPDFWithPdfJs(
           continue; // Try next password
         }
         // Other errors, stop trying
+        console.error("Stopping password attempts due to error:", err);
         break;
       }
     }
@@ -288,8 +275,6 @@ export async function extractTextFromEncryptedPDF(
   file: File,
   password: string,
 ): Promise<string> {
-  await initializePdfJs();
-
   const arrayBuffer = await file.arrayBuffer();
   const pdfjsLib = await import("pdfjs-dist");
 
