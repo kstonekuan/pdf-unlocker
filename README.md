@@ -2,6 +2,10 @@
 
 A web application to unlock password-protected PDF files. Upload your PDFs, and the application will try to unlock them using common passwords before asking you to provide a specific password.
 
+## 🚀 [Try it live on GitHub Pages](https://kstonekuan.github.io/pdf-unlocker/)
+
+> **Note:** The GitHub Pages version runs entirely in your browser without AI-powered filename suggestions. All PDF unlocking happens locally for maximum privacy and security.
+
 ## Features
 
 - Upload multiple PDF files at once
