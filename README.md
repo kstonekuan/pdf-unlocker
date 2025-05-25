@@ -165,3 +165,7 @@ The unlocked PDFs maintain visual quality while being fully readable and printab
 ## License
 
 This project is licensed under the MIT License.
+
+---
+
+*This project was built with [Claude Code](https://www.anthropic.com/claude-code) - AI-powered coding assistant that helped design, implement, and deploy this entire application.*
