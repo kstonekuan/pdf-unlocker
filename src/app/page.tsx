@@ -7,7 +7,10 @@ import { useState } from "react";
 
 export default function Home() {
   const [pdfFiles, setPdfFiles] = useState<PDFFile[]>([]);
-  const [enableRenaming, setEnableRenaming] = useState(true);
+  const aiSuggestionsAvailable =
+    process.env.NODE_ENV !== "production" ||
+    !!process.env.NEXT_PUBLIC_ENABLE_AI_SUGGESTIONS;
+  const [enableRenaming, setEnableRenaming] = useState(aiSuggestionsAvailable);
 
   const handleFilesSelected = (files: PDFFile[]) => {
     setPdfFiles((prev) => [...prev, ...files]);
@@ -30,16 +33,18 @@ export default function Home() {
         <p>Unlock password-protected PDFs securely in your browser</p>
       </header>
 
-      <div className="settings">
-        <label className="checkbox-label">
-          <input
-            type="checkbox"
-            checked={enableRenaming}
-            onChange={(e) => setEnableRenaming(e.target.checked)}
-          />
-          <span>Enable AI-powered filename suggestions</span>
-        </label>
-      </div>
+      {aiSuggestionsAvailable && (
+        <div className="settings">
+          <label className="checkbox-label">
+            <input
+              type="checkbox"
+              checked={enableRenaming}
+              onChange={(e) => setEnableRenaming(e.target.checked)}
+            />
+            <span>Enable AI-powered filename suggestions</span>
+          </label>
+        </div>
+      )}
 
       <PDFUploader onFilesSelected={handleFilesSelected} />
 

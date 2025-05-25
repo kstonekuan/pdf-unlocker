@@ -67,6 +67,15 @@ export default function PDFList({
   };
 
   const getSuggestedName = async (fileId: string, blob: Blob) => {
+    // Skip AI suggestions in static builds
+    if (
+      process.env.NODE_ENV === "production" &&
+      !process.env.NEXT_PUBLIC_ENABLE_AI_SUGGESTIONS
+    ) {
+      onUpdateFile(fileId, { status: "unlocked" });
+      return;
+    }
+
     try {
       const formData = new FormData();
       formData.append("pdf", blob);
