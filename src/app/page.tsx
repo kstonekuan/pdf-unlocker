@@ -86,8 +86,9 @@ export default function Home() {
           <div className="info-card">
             <h3>🎯 Complete Unlock</h3>
             <p>
-              Password-protected PDFs are fully unlocked by converting pages to 
-              high-resolution images. This removes all restrictions but text becomes non-searchable.
+              Password-protected PDFs are fully unlocked by converting pages to
+              high-resolution images. This removes all restrictions but text
+              becomes non-searchable.
             </p>
           </div>
         </div>

@@ -43,13 +43,19 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <meta property="og:title" content="PDF Unlocker" />
-        <meta property="og:description" content="Unlock password-protected PDF files securely in your browser" />
+        <meta
+          property="og:description"
+          content="Unlock password-protected PDF files securely in your browser"
+        />
         <meta property="og:image" content={`${basePath}/og-image.png`} />
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="PDF Unlocker" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="PDF Unlocker" />
-        <meta name="twitter:description" content="Unlock password-protected PDF files securely in your browser" />
+        <meta
+          name="twitter:description"
+          content="Unlock password-protected PDF files securely in your browser"
+        />
         <meta name="twitter:image" content={`${basePath}/og-image.png`} />
       </head>
       <body>
