@@ -177,17 +177,24 @@ body {
 
 .pdf-details {
   flex: 1;
+  min-width: 0; /* Allows flex item to shrink below content size */
 }
 
 .pdf-name {
   font-weight: 500;
   margin-bottom: 0.25rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .pdf-suggested-name {
   font-size: 0.9rem;
   color: #2563eb;
   margin-bottom: 0.25rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .pdf-status {

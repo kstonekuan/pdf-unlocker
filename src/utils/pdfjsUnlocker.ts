@@ -1,9 +1,69 @@
 import { PDFDocument } from "pdf-lib";
 
-// PDF.js types (we'll use any to avoid conflicts)
-type PDFJSPageProxy = any;
-type PDFJSDocumentProxy = any;
-type PDFJSLoadingTask = any;
+// PDF.js type definitions
+interface PDFJSError {
+  name: string;
+  message: string;
+  code?: number;
+}
+
+interface PDFJSTextItem {
+  str: string;
+  dir: string;
+  width: number;
+  height: number;
+  transform: number[];
+  fontName: string;
+}
+
+interface PDFJSTextContent {
+  items: PDFJSTextItem[];
+  styles: Record<string, unknown>;
+}
+
+interface PDFJSViewport {
+  width: number;
+  height: number;
+  scale: number;
+  rotation: number;
+  offsetX: number;
+  offsetY: number;
+  transform: number[];
+}
+
+interface PDFJSRenderContext {
+  canvasContext: CanvasRenderingContext2D;
+  viewport: PDFJSViewport;
+}
+
+interface PDFJSRenderTask {
+  promise: Promise<void>;
+}
+
+interface PDFJSPageProxy {
+  getViewport(params: { scale: number }): PDFJSViewport;
+  getTextContent(): Promise<PDFJSTextContent>;
+  render(renderContext: PDFJSRenderContext): PDFJSRenderTask;
+}
+
+interface PDFJSDocumentProxy {
+  numPages: number;
+  getPage(pageNumber: number): Promise<PDFJSPageProxy>;
+}
+
+interface PDFJSLoadingTask {
+  promise: Promise<PDFJSDocumentProxy>;
+}
+
+interface PDFJSLib {
+  getDocument(params: {
+    data: ArrayBuffer;
+    password?: string;
+  }): PDFJSLoadingTask;
+  GlobalWorkerOptions: {
+    workerSrc: string;
+  };
+}
 
 const COMMON_PASSWORDS = [
   "",
@@ -45,7 +105,8 @@ async function initializePdfJs() {
     const pdfjsLib = await import("pdfjs-dist");
 
     // Use local worker file
-    (pdfjsLib as any).GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+    (pdfjsLib as PDFJSLib).GlobalWorkerOptions.workerSrc =
+      "/pdf.worker.min.mjs";
     pdfJsInitialized = true;
   } catch (error) {
     console.error("Failed to initialize PDF.js:", error);
@@ -71,14 +132,16 @@ export async function unlockPDFWithPdfJs(
   try {
     console.log("Trying to load PDF without password...");
     const arrayBuffer = await getArrayBuffer();
-    const loadingTask = (pdfjsLib as any).getDocument({ data: arrayBuffer });
-    const pdfDoc = await loadingTask.promise;
+    const loadingTask = (pdfjsLib as PDFJSLib).getDocument({
+      data: arrayBuffer,
+    });
+    await loadingTask.promise;
 
     console.log("PDF loaded successfully without password - not encrypted");
     // If successful, PDF is not encrypted, return as-is
     return new Blob([arrayBuffer], { type: "application/pdf" });
   } catch (error: unknown) {
-    const err = error as any;
+    const err = error as PDFJSError;
     console.log("Error loading PDF without password:", err.name, err.message);
     // If not a password error, re-throw
     if (err.name !== "PasswordException") {
@@ -107,7 +170,7 @@ export async function unlockPDFWithPdfJs(
         console.log("Trying password: ***");
         const arrayBuffer = await getArrayBuffer(); // Fresh buffer for each attempt
 
-        const loadingTask = (pdfjsLib as any).getDocument({
+        const loadingTask = (pdfjsLib as PDFJSLib).getDocument({
           data: arrayBuffer,
           password: password,
         });
@@ -117,7 +180,7 @@ export async function unlockPDFWithPdfJs(
         // If successful, decrypt and return
         return await decryptPDFToImages(await getArrayBuffer(), password);
       } catch (error: unknown) {
-        const err = error as any;
+        const err = error as PDFJSError;
         console.log("Password failed:", err.name, err.message);
         if (
           err.name === "PasswordException" &&
@@ -139,7 +202,7 @@ export async function unlockPDFWithPdfJs(
   try {
     console.log("Trying user-provided password...");
     const arrayBuffer = await getArrayBuffer(); // Fresh buffer
-    const loadingTask = (pdfjsLib as any).getDocument({
+    const loadingTask = (pdfjsLib as PDFJSLib).getDocument({
       data: arrayBuffer,
       password: userPassword,
     });
@@ -148,7 +211,7 @@ export async function unlockPDFWithPdfJs(
     console.log("User password worked! Decrypting PDF...");
     return await decryptPDFToImages(await getArrayBuffer(), userPassword);
   } catch (error: unknown) {
-    const err = error as any;
+    const err = error as PDFJSError;
     console.error("User password failed:", err.name, err.message);
     if (
       err.name === "PasswordException" &&
@@ -169,7 +232,7 @@ async function decryptPDFToImages(
     const pdfjsLib = await import("pdfjs-dist");
 
     // Load the encrypted PDF with PDF.js
-    const loadingTask = (pdfjsLib as any).getDocument({
+    const loadingTask = (pdfjsLib as PDFJSLib).getDocument({
       data: arrayBuffer,
       password: password,
     });
@@ -264,7 +327,7 @@ export async function extractTextFromEncryptedPDF(
   const pdfjsLib = await import("pdfjs-dist");
 
   try {
-    const loadingTask = (pdfjsLib as any).getDocument({
+    const loadingTask = (pdfjsLib as PDFJSLib).getDocument({
       data: arrayBuffer,
       password: password,
     });
@@ -275,15 +338,13 @@ export async function extractTextFromEncryptedPDF(
     for (let i = 1; i <= pdfDoc.numPages; i++) {
       const page: PDFJSPageProxy = await pdfDoc.getPage(i);
       const textContent = await page.getTextContent();
-      const pageText = textContent.items
-        .map((item: { str: string }) => item.str)
-        .join(" ");
+      const pageText = textContent.items.map((item) => item.str).join(" ");
       fullText += `Page ${i}:\n${pageText}\n\n`;
     }
 
     return fullText;
   } catch (error: unknown) {
-    const err = error as any;
+    const err = error as PDFJSError;
     if (err.name === "IncorrectPasswordException") {
       throw new Error("Incorrect password");
     }

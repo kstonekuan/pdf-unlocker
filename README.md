@@ -129,4 +129,4 @@ The unlocked PDFs maintain visual quality while being fully readable and printab
 
 ## License
 
-This project is licensed under the ISC License.
+This project is licensed under the MIT License.
