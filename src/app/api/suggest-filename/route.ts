@@ -66,7 +66,6 @@ Return ONLY the suggested filename (with .pdf extension), nothing else. The file
 
     return NextResponse.json({ suggestedName });
   } catch (error) {
-    console.error("Error suggesting filename:", error);
     return NextResponse.json(
       { error: "Failed to suggest filename" },
       { status: 500 },

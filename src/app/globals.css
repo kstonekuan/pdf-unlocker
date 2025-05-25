@@ -148,6 +148,7 @@ body {
   border-radius: 6px;
   margin-bottom: 0.75rem;
   transition: all 0.3s ease;
+  min-width: 0; /* Allows container to shrink */
 }
 
 .pdf-item:hover {
@@ -169,6 +170,8 @@ body {
   align-items: center;
   gap: 1rem;
   flex: 1;
+  min-width: 0; /* Allows content to shrink */
+  overflow: hidden; /* Prevents overflow */
 }
 
 .pdf-icon svg {
@@ -178,6 +181,7 @@ body {
 .pdf-details {
   flex: 1;
   min-width: 0; /* Allows flex item to shrink below content size */
+  overflow: hidden; /* Ensures content doesn't overflow */
 }
 
 .pdf-name {
@@ -211,6 +215,7 @@ body {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  flex-shrink: 0; /* Prevents actions from shrinking */
 }
 
 .status-icon {

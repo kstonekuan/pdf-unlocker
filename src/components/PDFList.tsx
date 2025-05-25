@@ -150,7 +150,7 @@ export default function PDFList({
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
     } catch (error) {
-      console.error("Failed to create zip file:", error);
+      // Fallback to individual downloads
       // Fallback: download files individually
       for (const file of unlockedFiles) {
         await new Promise((resolve) => setTimeout(resolve, 100)); // Small delay between downloads

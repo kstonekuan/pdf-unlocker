@@ -348,7 +348,6 @@ export default function PDFWorkerProvider({
 
         setIsWorkerReady(true);
       } catch (err) {
-        console.error("PDF.js initialization failed:", err);
         setError(
           "Failed to initialize PDF processing. Some features may not work.",
         );
