@@ -3,6 +3,7 @@
 import PDFList from "@/components/PDFList";
 import PDFUploader from "@/components/PDFUploader";
 import type { PDFFile } from "@/types";
+import { COMMON_PASSWORDS } from "@/utils/pdfjsUnlocker";
 import { useState } from "react";
 
 export default function Home() {
@@ -60,6 +61,51 @@ export default function Home() {
           enableRenaming={enableRenaming}
         />
       )}
+
+      <section className="info-section">
+        <h2>How It Works</h2>
+        <div className="info-content">
+          <div className="info-card">
+            <h3>🔓 Smart Password Detection</h3>
+            <p>
+              When you upload a password-protected PDF, we first try common
+              passwords automatically. If none work, we'll ask you to enter the
+              password manually.
+            </p>
+          </div>
+
+          <div className="info-card">
+            <h3>🔒 Privacy & Security</h3>
+            <p>
+              All processing happens in your browser - your PDFs never leave
+              your device. The unlocking is done using client-side JavaScript
+              libraries.
+            </p>
+          </div>
+
+          <div className="info-card">
+            <h3>🎯 File Conversion</h3>
+            <p>
+              Unlocked PDFs are converted to image-based PDFs to ensure
+              compatibility and remove any remaining restrictions.
+            </p>
+          </div>
+        </div>
+
+        <details className="common-passwords">
+          <summary>Common Passwords We Try</summary>
+          <div className="password-list">
+            <p>We automatically test these common passwords (in order):</p>
+            <div className="password-grid">
+              {COMMON_PASSWORDS.filter((password) => password !== "").map(
+                (password) => (
+                  <span key={password}>{password}</span>
+                ),
+              )}
+            </div>
+          </div>
+        </details>
+      </section>
 
       <footer className="footer">
         <p>

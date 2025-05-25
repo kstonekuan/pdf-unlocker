@@ -350,6 +350,96 @@ body {
   text-decoration: underline;
 }
 
+.info-section {
+  margin: 3rem 0;
+  background-color: white;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.info-section h2 {
+  text-align: center;
+  color: #2563eb;
+  margin-bottom: 2rem;
+  font-size: 1.8rem;
+}
+
+.info-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.info-card {
+  padding: 1.5rem;
+  border: 1px solid #e5e5e5;
+  border-radius: 6px;
+  background-color: #fafafa;
+}
+
+.info-card h3 {
+  margin-bottom: 0.75rem;
+  color: #333;
+  font-size: 1.1rem;
+}
+
+.info-card p {
+  color: #666;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.common-passwords {
+  border: 1px solid #e5e5e5;
+  border-radius: 6px;
+  background-color: #f9f9f9;
+}
+
+.common-passwords summary {
+  padding: 1rem;
+  cursor: pointer;
+  font-weight: 500;
+  color: #2563eb;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+}
+
+.common-passwords summary:hover {
+  background-color: #f0f7ff;
+}
+
+.common-passwords[open] summary {
+  border-bottom: 1px solid #e5e5e5;
+  border-radius: 6px 6px 0 0;
+}
+
+.password-list {
+  padding: 1rem;
+}
+
+.password-list p {
+  margin-bottom: 1rem;
+  color: #666;
+}
+
+.password-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0.5rem;
+}
+
+.password-grid span {
+  background-color: #f3f4f6;
+  padding: 0.5rem;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.9rem;
+  text-align: center;
+  border: 1px solid #e5e5e5;
+}
+
 @media (max-width: 640px) {
   .container {
     padding: 1rem;
@@ -383,6 +473,35 @@ body {
   .download-all-btn {
     align-self: stretch;
     justify-content: center;
+  }
+
+  .info-section {
+    margin: 2rem 0;
+    padding: 1.5rem;
+  }
+
+  .info-section h2 {
+    font-size: 1.5rem;
+  }
+
+  .info-content {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .info-card {
+    padding: 1rem;
+  }
+
+  .password-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 0.4rem;
+  }
+
+  .password-grid span {
+    padding: 0.4rem;
+    font-size: 0.8rem;
   }
 }
 

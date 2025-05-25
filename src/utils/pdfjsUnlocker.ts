@@ -65,7 +65,7 @@ interface PDFJSLib {
   };
 }
 
-const COMMON_PASSWORDS = [
+export const COMMON_PASSWORDS = [
   "",
   "password",
   "123456",

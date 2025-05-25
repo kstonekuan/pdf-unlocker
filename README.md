@@ -1,29 +1,23 @@
 # PDF Unlocker
 
-A web application to unlock password-protected PDF files. Upload your PDFs, and the application will try to unlock them using common passwords before asking you to provide a specific password.
+A secure web application to unlock password-protected PDF files. All processing happens in your browser for maximum privacy.
 
-## 🚀 [Try it live on GitHub Pages](https://kstonekuan.github.io/pdf-unlocker/)
-
-> **Note:** The GitHub Pages version runs entirely in your browser without AI-powered filename suggestions. All PDF unlocking happens locally for maximum privacy and security.
+## 🚀 [Try it live](https://kstonekuan.github.io/pdf-unlocker/)
 
 ## Features
 
-- Upload multiple PDF files at once
-- Automatically try common passwords
-- Download unlocked PDFs
-- Intelligent filename suggestions using Claude AI
-- Rename PDFs based on their content
-- Modern, responsive UI
-- PDF unlocking happens securely in your browser
+- **Smart Password Detection**: Automatically tries 24+ common passwords
+- **Secure Processing**: All PDF unlocking happens locally in your browser
+- **Multiple Files**: Upload and process multiple PDFs at once
+- **AI Filename Suggestions**: Intelligent renaming based on content (full version only)
+- **High Quality Output**: Unlocked PDFs maintain visual quality
 
-## Technologies Used
+## Tech Stack
 
-- TypeScript
-- Next.js for the frontend and API routes
-- PDF.js for encrypted PDF handling and unlocking
-- pdf-lib for PDF manipulation and creation
-- Anthropic Claude AI for intelligent file analysis
-- Biome for linting and formatting
+- Next.js + TypeScript
+- PDF.js for PDF processing
+- pdf-lib for PDF manipulation  
+- Anthropic Claude AI (optional)
 
 ## Getting Started
 
