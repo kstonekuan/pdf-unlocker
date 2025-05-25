@@ -10,7 +10,7 @@ A secure web application to unlock password-protected PDF files. All processing 
 - **Secure Processing**: All PDF unlocking happens locally in your browser
 - **Multiple Files**: Upload and process multiple PDFs at once
 - **AI Filename Suggestions**: Intelligent renaming based on content (full version only)
-- **High Quality Output**: Unlocked PDFs maintain visual quality
+- **Preserves Original**: Unlocked PDFs keep original formatting and text
 
 ## Tech Stack
 

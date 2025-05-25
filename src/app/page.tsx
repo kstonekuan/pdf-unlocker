@@ -84,10 +84,11 @@ export default function Home() {
           </div>
 
           <div className="info-card">
-            <h3>🎯 File Conversion</h3>
+            <h3>🎯 Password Removal</h3>
             <p>
-              Unlocked PDFs are converted to image-based PDFs to ensure
-              compatibility and remove any remaining restrictions.
+              PDFs are unlocked by removing the password protection while
+              preserving the original content, formatting, and text
+              searchability.
             </p>
           </div>
         </div>
