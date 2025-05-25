@@ -7,6 +7,7 @@
       "node_modules/**",
       "dist/**",
       "build/**",
+      "out/**",
       "public/pdf.worker.min.mjs"
     ]
   },
@@ -23,6 +24,7 @@
       "node_modules/**",
       "dist/**",
       "build/**",
+      "out/**",
       "public/pdf.worker.min.mjs"
     ]
   },
@@ -35,6 +37,7 @@
       "node_modules/**",
       "dist/**",
       "build/**",
+      "out/**",
       "public/pdf.worker.min.mjs"
     ]
   }

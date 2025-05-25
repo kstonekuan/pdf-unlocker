@@ -18,14 +18,35 @@ export default function PDFWorkerProvider({
         // Only initialize on client side
         if (typeof window === "undefined") return;
 
+        console.log("🔧 Initializing PDF worker...");
+        console.log("Environment:", process.env.NODE_ENV);
+        console.log("Hostname:", window.location.hostname);
+        console.log("Pathname:", window.location.pathname);
+
         // Dynamic import of PDF.js to avoid SSR issues
         const pdfjsLib = await import("pdfjs-dist");
+        console.log("📦 PDF.js loaded successfully");
 
         // Use local worker file with base path support
-        const basePath = process.env.NODE_ENV === "production" && process.env.NEXT_PUBLIC_BASE_PATH 
-          ? process.env.NEXT_PUBLIC_BASE_PATH 
+        const isGitHubPages =
+          typeof window !== "undefined" &&
+          window.location.hostname.endsWith(".github.io");
+        const basePath = isGitHubPages
+          ? `/${window.location.pathname.split("/")[1]}`
           : "";
-        pdfjsLib.GlobalWorkerOptions.workerSrc = `${basePath}/pdf.worker.min.mjs`;
+
+        // For development, use absolute path from public folder
+        const workerPath =
+          process.env.NODE_ENV === "development"
+            ? "/pdf.worker.min.mjs"
+            : `${basePath}/pdf.worker.min.mjs`;
+
+        console.log("🔨 Worker path:", workerPath);
+        console.log("🌐 Is GitHub Pages:", isGitHubPages);
+        console.log("📂 Base path:", basePath);
+
+        pdfjsLib.GlobalWorkerOptions.workerSrc = workerPath;
+        console.log("✅ Worker source set");
 
         // Test that the worker is working by loading a minimal PDF
         const testPdf = new Uint8Array([
@@ -346,11 +367,21 @@ export default function PDFWorkerProvider({
           0x46, // %%EOF
         ]);
 
+        console.log("📄 Testing PDF worker with sample document...");
         const loadingTask = pdfjsLib.getDocument({ data: testPdf });
-        await loadingTask.promise;
+        const document = await loadingTask.promise;
+        console.log("✅ PDF document loaded successfully:", document);
 
         setIsWorkerReady(true);
+        console.log("🎉 PDF worker initialization complete!");
       } catch (err) {
+        console.error("❌ PDF worker initialization failed:", err);
+        const error = err instanceof Error ? err : new Error(String(err));
+        console.error("Error details:", {
+          message: error.message,
+          name: error.name,
+          stack: error.stack,
+        });
         setError(
           "Failed to initialize PDF processing. Some features may not work.",
         );

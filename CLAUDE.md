@@ -1,0 +1,1 @@
+- Always do typechecking, linting, and formatting after making changes.

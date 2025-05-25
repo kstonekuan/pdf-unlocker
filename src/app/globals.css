@@ -336,6 +336,20 @@ body {
   border-top: 1px solid #e5e5e5;
 }
 
+.github-link {
+  display: inline-flex;
+  align-items: center;
+  color: #2563eb;
+  text-decoration: none;
+  transition: color 0.3s ease;
+  font-weight: 500;
+}
+
+.github-link:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
 @media (max-width: 640px) {
   .container {
     padding: 1rem;
