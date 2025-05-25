@@ -36,8 +36,10 @@ export default function PDFWorkerProvider({
           : "";
 
         // For development, use absolute path from public folder
+        // For local static serving, also use absolute path without basePath
+        const isLocalStatic = window.location.hostname === "localhost";
         const workerPath =
-          process.env.NODE_ENV === "development"
+          process.env.NODE_ENV === "development" || isLocalStatic
             ? "/pdf.worker.min.mjs"
             : `${basePath}/pdf.worker.min.mjs`;
 
