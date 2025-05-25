@@ -74,29 +74,60 @@ yarn dev
 
 ## Building for Production
 
-To build the application for production, run:
+### With AI Suggestions (Full Version)
+
+For the complete experience with AI-powered filename suggestions:
 
 ```bash
+# Build with AI features
 pnpm build
-# or
-npm run build
-# or
-yarn build
+
+# Start production server
+pnpm start
 ```
 
-To start the production server:
+**Benefits:**
+- ✅ AI-powered intelligent filename suggestions
+- ✅ Automatic content analysis and renaming
+- ✅ Better file organization
+- ❌ Requires Anthropic API key
+- ❌ Needs server environment
+
+### Without AI (Static Version)
+
+For a fully static, offline-capable version:
 
 ```bash
-pnpm start
-# or
-npm run start
-# or
-yarn start
+# Build static version (no AI)
+pnpm run build:static
+
+# Serve locally to test
+npx serve out
 ```
 
-## Intelligent Filename Suggestions
+**Benefits:**
+- ✅ Runs completely offline
+- ✅ No API keys required
+- ✅ Deploy anywhere (GitHub Pages, Netlify, etc.)
+- ✅ Maximum privacy - nothing leaves your browser
+- ✅ Faster loading times
+- ❌ No AI filename suggestions
 
-The PDF Unlocker app includes a powerful feature that uses Claude to analyze the content of your PDFs and suggest more meaningful filenames. This is especially useful when:
+### Deployment Options
+
+**Static Deployment (Recommended for most users):**
+- GitHub Pages: Automatic via GitHub Actions
+- Netlify: Deploy the `out/` folder
+- Vercel: Deploy as static site
+- Any web server: Serve the `out/` folder
+
+**Server Deployment (For AI features):**
+- Vercel with environment variables
+- Any Node.js hosting with API support
+
+## Intelligent Filename Suggestions (Full Version Only)
+
+When running with AI enabled, the PDF Unlocker includes a powerful feature that uses Claude to analyze the content of your PDFs and suggest more meaningful filenames. This is especially useful when:
 
 - Your PDFs have generic names like "document.pdf" or "scan_001.pdf"
 - You've received PDFs with randomized names
@@ -109,7 +140,7 @@ The AI analyzes the PDF content to determine:
 
 If the AI determines the current name is appropriate, it will keep it unchanged. Otherwise, it will suggest a more descriptive name that reflects the actual content.
 
-This feature can be toggled on/off in the interface.
+**Note:** This feature is only available in the full version with server deployment. The static version focuses purely on PDF unlocking without external dependencies.
 
 ## How PDF Unlocking Works
 

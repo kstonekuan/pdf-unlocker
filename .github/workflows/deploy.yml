@@ -37,6 +37,8 @@ jobs:
 
       - name: Build static site
         run: pnpm run build:static
+        env:
+          NEXT_PUBLIC_BASE_PATH: /pdf-unlocker
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

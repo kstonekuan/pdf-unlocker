@@ -21,8 +21,11 @@ export default function PDFWorkerProvider({
         // Dynamic import of PDF.js to avoid SSR issues
         const pdfjsLib = await import("pdfjs-dist");
 
-        // Use local worker file
-        pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+        // Use local worker file with base path support
+        const basePath = process.env.NODE_ENV === "production" && process.env.NEXT_PUBLIC_BASE_PATH 
+          ? process.env.NEXT_PUBLIC_BASE_PATH 
+          : "";
+        pdfjsLib.GlobalWorkerOptions.workerSrc = `${basePath}/pdf.worker.min.mjs`;
 
         // Test that the worker is working by loading a minimal PDF
         const testPdf = new Uint8Array([
